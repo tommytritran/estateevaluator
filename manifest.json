@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "EstateEvaluator",
     "version": "1.0",
-    "description": "Enhance your browsing experience on real estate pages by providing insightful evaluations.",
+    "description": "Enhance your browsing experience on real estate pages on Finn.no by providing insightful evaluations.",
     "permissions": [
       "activeTab"
     ],
@@ -16,7 +16,7 @@
     },
     "content_scripts": [
       {
-        "matches": ["https://www.finn.no/realestate/homes/*"],
+        "matches": ["https://www.finn.no/realestate/homes/ad.html*"],
         "js": ["scripts/contentScript.js"]
       }
     ],
