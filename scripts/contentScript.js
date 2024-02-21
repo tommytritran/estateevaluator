@@ -51,13 +51,16 @@ function getPriceHistory(finnkode) {
             const parser = new DOMParser();
             const html = parser.parseFromString(text, 'text/html');
             const priceHistoryTable = getElementByXpath('/html/body/main/div[2]/table', html);
-            return extractPriceHistoryData(priceHistoryTable);
+            return priceHistoryTable
         })
 }
 
 function extractPriceHistoryData(table){
-    const rows = table.getElementsByTagName("tr");
     const data = [];
+    if(table === null){
+        return data;
+    }
+    const rows = table.getElementsByTagName("tr");
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         const cells = row.getElementsByTagName("td");
@@ -77,11 +80,12 @@ function createPriceHistoryTable(data){
     table.style.width = "100%";
     table.style.textAlign = "left";
     table.style.marginTop = "20px";
+    table.style.tableLayout = "fixed";
     const tableHead = document.createElement("thead");
     tableHead.innerHTML = "<tr><th>Dato</th><th>Pris</th></tr>";
     table.appendChild(tableHead);
     if(data.length > 0){
-        for (let inx = 0; index < data.length && 3; index++) {
+        for (let index = 0; index < data.length && 3; index++) {
             const tr = document.createElement("tr");
             const date = document.createElement("td");
             const price = document.createElement("td");
@@ -92,7 +96,16 @@ function createPriceHistoryTable(data){
             table.appendChild(tr);
         }
         return table;
-    }
+    } else{
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        const td1 = document.createElement("td");
+        td.append("Ingen prisdata tilgjengelig");
+        td.append("");
+        tr.appendChild(td);
+        tr.appendChild(td1);
+        table.appendChild(tr);
+    } 
     return table;
 }
 
@@ -105,7 +118,8 @@ async function init(){
     addElementToPage(viewCountElement, "/html/body/main/div[3]/section/div[1]/div[1]/section[2]/dl");
     
     const priceHistoryList = await getPriceHistory(finnKode);
-    const priceHistoryTable = createPriceHistoryTable(priceHistoryList);
+    const priceHistoryData = extractPriceHistoryData(priceHistoryList);
+    const priceHistoryTable = createPriceHistoryTable(priceHistoryData);
     const section = getElementByXpath("/html/body/main/div[3]/section/div[1]/div[1]/section[2]", document);
     const referenceNode = section.children[1];
     referenceNode.parentNode.insertBefore(priceHistoryTable, referenceNode.nextSibling);
