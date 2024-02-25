@@ -21,9 +21,9 @@ function getElementByXpath(path, html) {
 }
 
 function getViewCountValue(elementString) {
-    const start = elementString.indexOf(";");
-    const end = elementString.indexOf("<");
-    return elementString.substring(start + 1, end);
+    const cleaned = elementString.replace(/\s|&nbsp;/g, " ");
+    const end = cleaned.indexOf("<");
+    return cleaned.substring(0   , end);
 }
 
 function addElementToPage(element, path) {
